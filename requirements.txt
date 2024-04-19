@@ -7,3 +7,17 @@ pyjwt
 psycopg2
 faker
 faker-commerce
+
+# req
+mysql-connector-python
+sqlalchemy
+fastapi
+uvicorn[standard]
+
+# req
+mysql-connector-python
+psycopg2
+sqlalchemy
+faker
+faker-commerce
+passlib[bcrypt]

@@ -1,0 +1,93 @@
+SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
+SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
+SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
+
+CREATE SCHEMA IF NOT EXISTS `rentals_schema_OLAP_3` DEFAULT CHARACTER SET utf8 ;
+USE `rentals_schema_OLAP_3` ;
+
+-- Simplified Dimension Table for Users Auth REST
+CREATE TABLE IF NOT EXISTS `auth_users_REST` (
+  `user_id` INT(11) NOT NULL AUTO_INCREMENT,
+  `username` VARCHAR(45) NOT NULL UNIQUE,
+  `password` VARCHAR(225) NOT NULL,
+  PRIMARY KEY (`user_id`)
+) ENGINE = InnoDB DEFAULT CHARACTER SET = utf8;
+
+
+-- Dimension Table for Users
+CREATE TABLE IF NOT EXISTS `dim_auth_users` (
+  `user_id` INT(11) NOT NULL AUTO_INCREMENT,
+  `username` VARCHAR(45) NOT NULL,
+  `password` VARCHAR(225) NOT NULL,
+  `role_id` INT(11) NOT NULL,
+  PRIMARY KEY (`user_id`),
+  UNIQUE INDEX `username_UNIQUE` (`username` ASC)
+) ENGINE = InnoDB DEFAULT CHARACTER SET = utf8;
+
+
+-- Dimension Table for Categories
+CREATE TABLE IF NOT EXISTS `category_dim` (
+  `category_id` INT(11) NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`category_id`),
+  UNIQUE INDEX `name_UNIQUE` (`name` ASC))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+-- Dimension Table for Rental Items
+CREATE TABLE IF NOT EXISTS `dim_rental_items` (
+  `item_id` INT(11) NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(45) NOT NULL,
+  `description` TEXT NULL,
+  `serial_number` VARCHAR(100) NOT NULL,
+  `category_id` INT(11) NOT NULL,
+  `acquisition_date` DATE NOT NULL,
+  PRIMARY KEY (`item_id`),
+  CONSTRAINT `fk_dim_rental_items_category_dim`
+    FOREIGN KEY (`category_id`)
+    REFERENCES `category_dim` (`category_id`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+-- Date Dimension Table
+CREATE TABLE IF NOT EXISTS `dim_date` (
+  `date_key` DATE NOT NULL,
+  `year` YEAR(4) NOT NULL,
+  `quarter` TINYINT NOT NULL,
+  `month` TINYINT NOT NULL,
+  `month_name` VARCHAR(9) NOT NULL,
+  `week` TINYINT NOT NULL,
+  `day_of_month` TINYINT NOT NULL,
+  `day_of_week` TINYINT NOT NULL,
+  `day_name` VARCHAR(9) NOT NULL,
+  PRIMARY KEY (`date_key`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+-- Fact Table for Rental Transactions
+CREATE TABLE IF NOT EXISTS `fact_rental_transactions` (
+  `transaction_id` INT(11) NOT NULL AUTO_INCREMENT,
+  `due_date` DATE NOT NULL,
+  `returned_at` DATE NULL,
+  `user_id` INT(11) NOT NULL,
+  `item_id` INT(11) NOT NULL,
+  `date_key` DATE NOT NULL,
+  PRIMARY KEY (`transaction_id`),
+  INDEX `fk_fact_rental_transactions_dim_auth_users_idx` (`user_id` ASC),
+  INDEX `fk_fact_rental_transactions_dim_rental_items_idx` (`item_id` ASC),
+  INDEX `fk_fact_rental_transactions_dim_date_idx` (`date_key` ASC),
+  CONSTRAINT `fk_fact_rental_transactions_dim_auth_users`
+    FOREIGN KEY (`user_id`)
+    REFERENCES `dim_auth_users` (`user_id`),
+  CONSTRAINT `fk_fact_rental_transactions_dim_rental_items`
+    FOREIGN KEY (`item_id`)
+    REFERENCES `dim_rental_items` (`item_id`),
+  CONSTRAINT `fk_fact_rental_transactions_dim_date`
+    FOREIGN KEY (`date_key`)
+    REFERENCES `dim_date` (`date_key`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+SET SQL_MODE=@OLD_SQL_MODE;
+SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
+SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;

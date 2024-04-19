@@ -1,0 +1,154 @@
+-- MySQL Workbench Forward Engineering
+
+SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
+SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
+SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
+
+-- -----------------------------------------------------
+-- Schema laplanduas_rental
+-- -----------------------------------------------------
+
+-- -----------------------------------------------------
+-- Schema laplanduas_rental
+-- -----------------------------------------------------
+CREATE SCHEMA IF NOT EXISTS `laplanduas_rental` DEFAULT CHARACTER SET utf8 ;
+USE `laplanduas_rental` ;
+
+-- -----------------------------------------------------
+-- Table `laplanduas_rental`.`roles`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `laplanduas_rental`.`roles` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `role` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX `role_UNIQUE` (`role` ASC))
+ENGINE = InnoDB
+AUTO_INCREMENT = 9
+DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `laplanduas_rental`.`auth_users`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `laplanduas_rental`.`auth_users` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `username` VARCHAR(45) NOT NULL,
+  `password` VARCHAR(255) NOT NULL,
+  `roles_id` INT(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX `username_UNIQUE` (`username` ASC),
+  INDEX `fk_auth_users_roles_idx` (`roles_id` ASC),
+  CONSTRAINT `fk_auth_users_roles`
+    FOREIGN KEY (`roles_id`)
+    REFERENCES `laplanduas_rental`.`roles` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+AUTO_INCREMENT = 1319
+DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `laplanduas_rental`.`categories`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `laplanduas_rental`.`categories` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX `name_UNIQUE` (`name` ASC))
+ENGINE = InnoDB
+AUTO_INCREMENT = 89
+DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `laplanduas_rental`.`features`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `laplanduas_rental`.`features` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `feature` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX `feature_UNIQUE` (`feature` ASC))
+ENGINE = InnoDB
+AUTO_INCREMENT = 21
+DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `laplanduas_rental`.`rental_items`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `laplanduas_rental`.`rental_items` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(45) NOT NULL,
+  `description` TEXT NULL DEFAULT NULL,
+  `created_at` DATETIME NOT NULL,
+  `deleted_at` DATETIME NULL DEFAULT NULL,
+  `serial_number` VARCHAR(100) NOT NULL,
+  `categories_id` INT(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `fk_rental_items_categories1_idx` (`categories_id` ASC),
+  CONSTRAINT `fk_rental_items_categories1`
+    FOREIGN KEY (`categories_id`)
+    REFERENCES `laplanduas_rental`.`categories` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+AUTO_INCREMENT = 2001
+DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `laplanduas_rental`.`rental_items_has_features`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `laplanduas_rental`.`rental_items_has_features` (
+  `rental_items_id` INT(11) NOT NULL,
+  `features_id` INT(11) NOT NULL,
+  `value` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`rental_items_id`, `features_id`),
+  INDEX `fk_rental_items_has_features_features1_idx` (`features_id` ASC),
+  INDEX `fk_rental_items_has_features_rental_items1_idx` (`rental_items_id` ASC),
+  CONSTRAINT `fk_rental_items_has_features_features1`
+    FOREIGN KEY (`features_id`)
+    REFERENCES `laplanduas_rental`.`features` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_rental_items_has_features_rental_items1`
+    FOREIGN KEY (`rental_items_id`)
+    REFERENCES `laplanduas_rental`.`rental_items` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `laplanduas_rental`.`rental_transactions`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `laplanduas_rental`.`rental_transactions` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `created_at` DATETIME NOT NULL,
+  `due_date` DATETIME NOT NULL,
+  `returned_at` DATETIME NULL DEFAULT NULL,
+  `auth_users_id` INT(11) NOT NULL,
+  `rental_items_id` INT(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `fk_rental_transactions_auth_users1_idx` (`auth_users_id` ASC),
+  INDEX `fk_rental_transactions_rental_items1_idx` (`rental_items_id` ASC),
+  CONSTRAINT `fk_rental_transactions_auth_users1`
+    FOREIGN KEY (`auth_users_id`)
+    REFERENCES `laplanduas_rental`.`auth_users` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_rental_transactions_rental_items1`
+    FOREIGN KEY (`rental_items_id`)
+    REFERENCES `laplanduas_rental`.`rental_items` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+AUTO_INCREMENT = 2001
+DEFAULT CHARACTER SET = utf8;
+
+
+SET SQL_MODE=@OLD_SQL_MODE;
+SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
+SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;

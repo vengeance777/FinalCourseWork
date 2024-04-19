@@ -1,5 +1,5 @@
 from passlib.hash import pbkdf2_sha512 as pl
-from db import DW
+from REST.db import DW
 from pydantic import BaseModel
 from sqlalchemy.sql import text
 import jwt
