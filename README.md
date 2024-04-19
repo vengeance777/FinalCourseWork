@@ -8,9 +8,9 @@ Steps
 If required upon running, remember to separately install requirements for each folder
 by navigating with cd command to folder and install with pip
 
-pip install -r requirements1.txt
-pip install -r requirements2.txt
-pip install -r requirements3.txt
+*** pip install -r requirements.txt ***
+*** pip install -r requirements2.txt ***
+*** pip install -r requirements3.txt ***
 
 #### laplanduas_rental.sql might need to be imported to database server instead  of empty OLTP.txt create script file if running faker gives errors during import users (this data was added during lectures and contains full db dumb) 
 
