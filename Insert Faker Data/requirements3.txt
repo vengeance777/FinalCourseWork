@@ -1,0 +1,6 @@
+mysql-connector-python
+psycopg2
+sqlalchemy
+faker
+faker-commerce
+passlib[bcrypt]

@@ -2,5 +2,8 @@ fastapi
 mysql-connector-python
 uvicorn[standard]
 sqlalchemy
-
-
+passlib[bcrypt]
+pyjwt
+psycopg2
+faker
+faker-commerce

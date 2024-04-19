@@ -3,7 +3,7 @@ from sqlalchemy.orm import sessionmaker, Session
 from fastapi import Depends
 from typing import Annotated
 
-engine = create_engine('mysql+mysqlconnector://root:@127.0.0.1/rentals_schema_olap')
+engine = create_engine('mysql+mysqlconnector://root:@127.0.0.1/rentals_schema_OLAP_3')
 dw_session = sessionmaker(bind=engine)
 
 def get_dw():
