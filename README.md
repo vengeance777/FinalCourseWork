@@ -13,4 +13,6 @@ pip install -r requirements2.txt
 pip install -r requirements3.txt
 
 #### laplanduas_rental.sql might need to be imported to database server instead  of empty OLTP.txt create script file if running faker gives errors during import users (this data was added during lectures and contains full db dumb) 
-#### There is possibility separate virtual environment needs to be created for each folder and their requirements to avoid conflicts to get rid of above problem
+
+#### There is possibility separate virtual environment needs to be created for each folder and their requirements to avoid conflicts to get rid of above problem due to confliting requirements in the .venv, especially for faker.
+### with laplanduas_rental.sql to OLAP (main2) and REST (main3) should work without problems. 
