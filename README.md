@@ -12,5 +12,5 @@ pip install -r requirements1.txt
 pip install -r requirements2.txt
 pip install -r requirements3.txt
 
-*laplanduas_rental.sql with need to be imported to database server instead  of empty OLTP.txt create script file if running faker gives errors.
-*There is possibility separate virtual environment needs to be created for each folder and their requirements
+*laplanduas_rental.sql might need to be imported to database server instead  of empty OLTP.txt create script file if running faker gives errors to get existing data. (this data was added during lectures and contains full db dumb) 
+*There is possibility separate virtual environment needs to be created for each folder and their requirements to avoid conflicts
